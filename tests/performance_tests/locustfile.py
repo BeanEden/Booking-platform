@@ -22,10 +22,6 @@ class ProjectPerfTest(HttpUser):
         self.client.get("logout")
 
     @task(6)
-    def clubsTable(self):
-        self.client.get("clubs")
-
-    @task(6)
     def purchasePlace(self):
         self.client.post('purchasePlaces',
                          data=dict(club=club,
