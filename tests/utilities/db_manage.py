@@ -30,9 +30,9 @@ def loadCompetitions():
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
 
-
 clubs = loadClubs()
 competitions = loadCompetitions()
+
 
 
 def resetDatabase(club, competition):
@@ -48,9 +48,10 @@ def resetDatabase(club, competition):
         competition['clubsParticipating'] = [
             {'club': club['name'], 'placesBooked': 1}]
 
-    club['points'] = 30
+    club['points'] = 60
     competition['numberOfPlaces'] = 50
-
+    print("restarted")
+    print(path)
     with open(path + '/database/competitions.json', "w") as cr:
         data = {'competitions': competitions}
         json.dump(data, cr)
@@ -58,3 +59,12 @@ def resetDatabase(club, competition):
     with open(path + '/database/clubs.json', "w") as cr:
         data = {'clubs': clubs}
         json.dump(data, cr)
+
+resetDatabase(club, competition)
+
+
+def resetSpecificElement(client, club, competition, places_bought):
+    rv = client.post('/purchasePlaces',
+                     data=dict(club=club,
+                               competition=competition,
+                               places=-places_bought))

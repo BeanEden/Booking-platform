@@ -1,6 +1,6 @@
 import pytest
 from server import app, dateStringSplit, dateTimeCheck, \
-    loadPlacesAlreadyBooked, updatePlacesBookedOrCreate
+    loadPlacesAlreadyBooked, updatePlacesBookedOrCreate, POINTS_PER_PLACE
 from tests.utilities.db_manage import getClub, resetDatabase
 
 
@@ -83,7 +83,7 @@ def test_purchasePlace_booking_should_work(client, club_one,
                                places=places_bought))
     data = rv.data.decode()
     points = club_base['points']
-    message = 'Points available: ' + str(points-places_bought)
+    message = 'Points available: ' + str(points-(places_bought*POINTS_PER_PLACE))
     assert rv.status_code == 200
     assert data.find('<li>Great-booking complete!</li>') != -1
     assert data.find(message) != -1
@@ -91,7 +91,7 @@ def test_purchasePlace_booking_should_work(client, club_one,
 
 @pytest.fixture
 def club_one():
-    club = {"name": "Simply Lift", "points": "20"}
+    club = {"name": "Simply Lift", "points": "40"}
     return club
 
 
@@ -239,7 +239,7 @@ def test_purchasePlace_book_more_than_12_in_2_booking(client):
 def test_clubsTable(client):
     expected_club_one = 'Iron Temple - 4 points'
     expected_club_two = 'She Lifts - 12 points'
-    expected_club_three = 'Simply Lift - 21 points'
+    expected_club_three = 'Simply Lift - 33 points'
     rv = client.get('/clubs')
     data = rv.data.decode()
     assert rv.status_code == 200

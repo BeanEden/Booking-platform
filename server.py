@@ -4,16 +4,19 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 import os
 
 
-def loadClubs():
+POINTS_PER_PLACE = int(3)
+
+
+def loadClubs(path=''):
     """load all clubs of the db, return a list of dict"""
-    with open(os.getcwd()+'/database/clubs.json') as c:
+    with open(os.getcwd()+path+'/database/clubs.json') as c:
         listOfClubs = json.load(c)['clubs']
         return listOfClubs
 
 
-def loadCompetitions():
+def loadCompetitions(path=''):
     """load all competitions of the db, return a list of dict"""
-    with open(os.getcwd()+'/database/competitions.json') as comps:
+    with open(os.getcwd()+path+'/database/competitions.json') as comps:
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
 
@@ -31,7 +34,7 @@ def bookingLimit(competition, club, already_booked):
     used during booking"""
     listed = []
     listed.append(int(competition['numberOfPlaces']))
-    listed.append(int(club['points']))
+    listed.append(int(int(club['points'])/int(POINTS_PER_PLACE)))
     listed.append(12-int(already_booked))
     return min(listed)
 
@@ -135,7 +138,7 @@ def book(competition, club):
         return render_template('booking.html', club=foundClub,
                                competition=foundCompetition,
                                placesAlreadyBooked=placesAlreadyBooked,
-                               booking_max=bookingMax)
+                               booking_max=bookingMax, points_per_place=POINTS_PER_PLACE)
     else:
         flash("Something went wrong-please try again")
         return render_template('welcome.html', club=club,
@@ -151,11 +154,11 @@ def purchasePlaces():
     club = [c for c in clubs if c['name'] == request.form['club']][0]
     placesAlreadyBooked = loadPlacesAlreadyBooked(competition, club)
     placesRequired = int(request.form['places'])
-    if placesRequired > int(club['points']):
+    if placesRequired > int(club['points']/POINTS_PER_PLACE):
         error_message = "You don't have enough points to make this reservation"
         return render_template('booking.html', club=club,
                                competition=competition,
-                               error_message=error_message)
+                               error_message=error_message, points_per_place=POINTS_PER_PLACE)
 
     totalPlacesBooked = placesAlreadyBooked + placesRequired
     if totalPlacesBooked > 12:
@@ -163,11 +166,12 @@ def purchasePlaces():
         return render_template('booking.html', club=club,
                                competition=competition,
                                placesAlreadyBooked=placesAlreadyBooked,
-                               error_message=error_message)
+                               error_message=error_message,
+                               points_per_place=POINTS_PER_PLACE)
     else:
         competition['numberOfPlaces'] = int(competition['numberOfPlaces'])\
                                         - placesRequired
-        club['points'] = int(club['points'])-placesRequired
+        club['points'] = int(club['points'])-(placesRequired*POINTS_PER_PLACE)
         competition = updatePlacesBookedOrCreate(competition, club,
                                                  totalPlacesBooked)
         with open(os.getcwd() + '/database/clubs.json', "w") as c:
