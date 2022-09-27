@@ -221,8 +221,6 @@ def test_login_book_limit_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_over_limit_in_two))
     data_purchased_fail = rv.data.decode()
-    print(data_purchased_fail)
-    print(message)
     message_same_points = message
     assert data_purchased_fail.find(message_same_points) != -1
     assert data_purchased_fail.find('<p>You can&#39;t book more than '
