@@ -306,7 +306,6 @@ def test_login_clubsTable_logout_route(client):
 ### Connect to clubsTable
     rv = client.get('/clubs')
     data = rv.data.decode()
-    print(data)
     assert rv.status_code == 200
     assert data.find('<h2>Clubs_list</h2>') != -1
 
