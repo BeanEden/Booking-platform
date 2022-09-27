@@ -7,16 +7,16 @@ import os
 POINTS_PER_PLACE = int(3)
 
 
-def loadClubs(path=''):
+def loadClubs():
     """load all clubs of the db, return a list of dict"""
-    with open(os.getcwd()+path+'/database/clubs.json') as c:
+    with open(os.getcwd()+'/database/clubs.json') as c:
         listOfClubs = json.load(c)['clubs']
         return listOfClubs
 
 
-def loadCompetitions(path=''):
+def loadCompetitions():
     """load all competitions of the db, return a list of dict"""
-    with open(os.getcwd()+path+'/database/competitions.json') as comps:
+    with open(os.getcwd()+'/database/competitions.json') as comps:
         listOfCompetitions = json.load(comps)['competitions']
         return listOfCompetitions
 

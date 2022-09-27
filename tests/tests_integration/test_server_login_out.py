@@ -1,7 +1,6 @@
 import pytest
-from server import app, dateStringSplit, dateTimeCheck, \
-    loadPlacesAlreadyBooked, updatePlacesBookedOrCreate, POINTS_PER_PLACE
-from tests.utilities.db_manage import getClub, resetDatabase, resetSpecificElement
+from server import app
+from tests.utilities.db_manage import resetDatabase
 
 valid_email = "john@simplylift.co"
 club = "Simply Lift"

@@ -127,9 +127,9 @@ def test_login_book_points_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_bought_fail))
     data_purchased_fail = rv.data.decode()
-    # message_same_points = 'Points available : '+ str(
-    #     points)
-    # assert data_purchased_fail.find(message_same_points) != -1
+    message_same_points = 'Points available: '+ str(
+        points)
+    assert data_purchased_fail.find(message_same_points) != -1
     assert data_purchased_fail.find('<p>You don&#39;t have enough points '
                                     'to make this reservation</p>') != -1
     ### Booking successfull
@@ -138,10 +138,10 @@ def test_login_book_points_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_bought))
     data_purchased = rv.data.decode()
-    # message = 'Points available: '+ str(
-    #     points - (places_bought * POINTS_PER_PLACE))
+    message = 'Points available: '+ str(
+        points - (places_bought * POINTS_PER_PLACE))
     assert data_purchased.find('<li>Great-booking complete!</li>') != -1
-    # assert data_purchased.find(message) != -1
+    assert data_purchased.find(message) != -1
     ### Log out
     rv = client.get('/logout')
     data_logout = rv.data.decode()
@@ -190,8 +190,8 @@ def test_login_book_limit_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_over_limit))
     data_purchased_fail = rv.data.decode()
-    # message_same_points = 'Points available :' + str(points)
-    # assert data_purchased_fail.find(message_same_points) != -1
+    message_same_points = 'Points available: ' + str(points)
+    assert data_purchased_fail.find(message_same_points) != -1
     assert data_purchased_fail.find('<p>You can&#39;t book more than '
                                     '12 places for an event</p>') != -1
     ### Booking successfull
@@ -200,10 +200,10 @@ def test_login_book_limit_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_over_limit_in_two))
     data_purchased = rv.data.decode()
-    # message = 'Points available: ' + str(
-    #     points - (places_over_limit_in_two * POINTS_PER_PLACE))
+    message = 'Points available: ' + str(
+        points - (places_over_limit_in_two * POINTS_PER_PLACE))
     assert data_purchased.find('<li>Great-booking complete!</li>') != -1
-    # assert data_purchased.find(message) != -1
+    assert data_purchased.find(message) != -1
 
     ### Back to booking page try to book over 12
     rv = client.get(expected_booking_url)
@@ -221,8 +221,10 @@ def test_login_book_limit_fail_then_sucess_logout(client):
                                competition=competition,
                                places=places_over_limit_in_two))
     data_purchased_fail = rv.data.decode()
-    # message_same_points = message
-    # assert data_purchased_fail.find(message_same_points) != -1
+    print(data_purchased_fail)
+    print(message)
+    message_same_points = message
+    assert data_purchased_fail.find(message_same_points) != -1
     assert data_purchased_fail.find('<p>You can&#39;t book more than '
                                     '12 places for an event</p>') != -1
     # ### Booking up to 12
@@ -245,7 +247,7 @@ def test_login_book_limit_fail_then_sucess_logout(client):
     assert rv.status_code == 200
     assert data_index.find(
         '<h1>Welcome to the GUDLFT Registration Portal!</h1>') != -1
-
+    resetSpecificElement(client, club, competition, places_over_limit_in_two)
 
 def test_login_book_then_refund(client):
     """l'utilisateur se connecte, essaie de trop réserver (plus que ses points)
@@ -294,7 +296,3 @@ def test_login_book_then_refund(client):
     assert data_logout.find('<h1>Redirecting...</h1>') != -1
     assert data_index.find(
         '<h1>Welcome to the GUDLFT Registration Portal!</h1>') != -1
-
-# def test_login_book_clubTable_route
-#
-# def test_login_book_rebook_logout_route()

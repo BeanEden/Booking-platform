@@ -62,9 +62,6 @@ def resetDatabase(club, competition):
 
 resetDatabase(club, competition)
 
-
 def resetSpecificElement(client, club, competition, places_bought):
-    rv = client.post('/purchasePlaces',
-                     data=dict(club=club,
-                               competition=competition,
-                               places=-places_bought))
+    rv = client.post('/purchasePlaces', data=dict(
+        club=club, competition=competition, places=-places_bought))

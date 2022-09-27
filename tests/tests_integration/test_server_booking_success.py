@@ -1,6 +1,6 @@
 import pytest
-from server import app, dateStringSplit, dateTimeCheck, \
-    loadPlacesAlreadyBooked, updatePlacesBookedOrCreate, POINTS_PER_PLACE
+import os
+from server import app, POINTS_PER_PLACE
 from tests.utilities.db_manage import getClub, resetDatabase, resetSpecificElement
 
 valid_email = "john@simplylift.co"
@@ -10,6 +10,8 @@ club = "Simply Lift"
 competition = "Spring Festival"
 places_bought = 2
 resetDatabase(club, competition)
+
+
 
 @pytest.fixture
 def client():
@@ -24,6 +26,7 @@ def test_login_book_logout_route(client):
     verification du passage par chaque page via html"""
     club_base = getClub(club)
     points = club_base['points']
+    print(points)
 ### Index
     rv = client.get('/')
     data = rv.data.decode()
@@ -34,6 +37,7 @@ def test_login_book_logout_route(client):
     rv = client.post('/showSummary', data={'email': [valid_email]})
     data = rv.data.decode()
     expected_booking_url = "/book/Spring%20Festival/Simply%20Lift"
+    print(data)
     assert data.find(
         '<a href="' + expected_booking_url + '">Book Places</a>') != -1
 ### Booking page
@@ -45,12 +49,15 @@ def test_login_book_logout_route(client):
         '<input type="hidden" name="competition" value="' + competition + '">') != -1
     assert data_booking.find(
         '<input type="hidden" name="club" value="' + club + '">') != -1
+
 ### Booking successful, back to index
     rv = client.post('/purchasePlaces',
                      data=dict(club=club,
                                competition=competition,
                                places=places_bought))
     data_purchased = rv.data.decode()
+    resetDatabase(club, competition)
+
     message = 'Points available: ' + str(
         points - (places_bought * POINTS_PER_PLACE))
     assert data_purchased.find('<li>Great-booking complete!</li>') != -1
