@@ -50,8 +50,6 @@ def resetDatabase(club, competition):
 
     club['points'] = 60
     competition['numberOfPlaces'] = 50
-    print("restarted")
-    print(path)
     with open(path + '/database/competitions.json', "w") as cr:
         data = {'competitions': competitions}
         json.dump(data, cr)
